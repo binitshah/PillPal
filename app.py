@@ -1,3 +1,10 @@
-from setup import app
+from flask import Flask
 
-app.run(debug=True)
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return "hey!"
+
+if __name__ == "__main__":
+    app.run()
