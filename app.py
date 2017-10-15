@@ -11,7 +11,7 @@ db = client.get_default_database()
 
 @app.route('/')
 def index():
-    convert_frequency_and_time_to_date(datetime(2017, 10, 3), 4, "8:00")
+    # convert_frequency_and_time_to_date(datetime(2017, 10, 3), 4, "8:00")
     return "Hi! Welcome to PillPal!"
 
 @app.route('/get_device_profiles/<device_id>')
@@ -69,46 +69,50 @@ def get_next_prescription(device_id):
     for device in devices_cursor:
         for profile_id in device['profile_ids']:
             profile_ids.append(profile_id)
-        if (len(profile_ids) > 0):
+            profiles_db = db["profiles"]
             for profile_id in profile_ids:
-                profiles_db = db["profiles"]
+                print(profile_id)
                 profile_cursor = profiles_db.find({'profile_id': profile_id})
                 if (profile_cursor.count() > 0):
                     # profile exists, which is normal. Let's get the prescriptions
-                    profile = profile_cursor[0]
-                    prescription_ids = profile['prescription_ids']
-                    if (len(prescription_ids) > 0):
-                        # figure out next prescription and send it back
-                        prescriptions = []
-                        prescriptions_db = db['prescriptions']
-                        for prescription_id in prescription_ids:
-                            prescription_cursor = prescriptions_db.find({'prescription_id': prescription_id})
-                            if (prescription_cursor.count() > 0):
-                                prescriptions.append(prescription_cursor[0])
-                        
-                        prescridoses_dates = []
-                        # given each prescription, we'll need to get doses
-                        for prescription in prescriptions:
-                            prescridoses_dates.append(convert_frequency_and_time_to_date(prescription['start_date'], prescription['frequency'], prescription['time']))
+                    for profile in profile_cursor:
+                        prescription_ids = profile['prescription_ids']
+                        if (len(prescription_ids) > 0):
+                            # figure out next prescription and send it back
+                            prescriptions = []
+                            prescriptions_db = db['prescriptions']
+                            for prescription_id in prescription_ids:
+                                prescription_cursor = prescriptions_db.find({'prescription_id': prescription_id})
+                                if (prescription_cursor.count() > 0):
+                                    prescriptions.append(prescription_cursor[0])
+                            
+                            prescridoses_dates = []
+                            # given each prescription, we'll need to get doses
+                            for prescription in prescriptions:
+                                prescridoses_dates.append(convert_frequency_and_time_to_date(prescription['start_date'], prescription['frequency'], prescription['time']))
 
-                        # sort
-                        prescridoses_dates.sort()
-                        return jsonify(error=False, next_prescription=prescridoses_dates[0])
+                            # sort
+                            prescridoses_dates.sort()
+                            return jsonify(error=False, next_prescription=prescridoses_dates[0])
 
-                    else:
-                        # no prescriptions to deal with
-                        return jsonify(error=False, next_prescription="")
+                        else:
+                            # no prescriptions to deal with
+                            return jsonify(error=False, next_prescription="")
                 else:
                     # well shit, so the profile doesn't exist
                     return jsonify(error=True, next_prescription="")
 
 def convert_frequency_and_time_to_date(start_date, frequency, time):
+    big_time_bits = start_date.split()
     time_bits = time.split(":")
+    year = int(big_time_bits[0])
+    month = int(big_time_bits[1])
+    day = int(big_time_bits[2])
     hour = int(time_bits[0]) - 1
     minute = int(time_bits[1]) - 1
     if (minute < 0):
         minute = 0
-    start_date = datetime(start_date.year, start_date.month, start_date.day, hour, minute)
+    start_date = datetime(year, month, day, hour, minute)
     while (start_date < datetime.now()):
         start_date = start_date + timedelta(days=frequency)
     return start_date
