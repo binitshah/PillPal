@@ -93,7 +93,7 @@ def get_next_prescription(device_id):
 
                             # sort
                             prescridoses_dates.sort()
-                            return jsonify(error=False, next_prescription=prescridoses_dates[0])
+                            return jsonify(error=False, next_prescription=prescridoses_dates[0], color="blue")
 
                         else:
                             # no prescriptions to deal with
