@@ -10,6 +10,7 @@
 #include <Wire.h>
 #include <SPI.h>
 #include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
 
 
 
@@ -39,6 +40,16 @@ void setup() {
 }
 
 void loop() {
+
+  HTTPClient http;
+  http.begin("pillpal.hirokuapp.com");
+  int httpCode = http.GET();
+  String payload = http.getString();
+  Serial.println(payload);
+  http.end();
+  sendCommand2(payload);
+  delay(30000);
+  
  
 }
 
@@ -56,3 +67,4 @@ String receiveCommandString2()
   String tempString = Serial.readString();
   return tempString;
 }
+
