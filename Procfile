@@ -1,1 +1,1 @@
-web: build\install\pillpal\bin\pillpal
+web: gunicorn app:app
