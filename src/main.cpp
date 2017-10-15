@@ -10,6 +10,7 @@
 #include <Wire.h>
 #include <rgb_lcd.h>
 #include <Servo.h>
+#include <Wifi.h>
 
 #define BUZZER 9
 #define SERVO 12
@@ -47,7 +48,7 @@ void loop()
 {
     
       String incomingString = receiveCommandString();
-      dispString(incomingString);   
+  
       delay(10);
 }
 
