@@ -28,7 +28,7 @@ void playFreq(float, float);
 void dispString(String);
 void sendCommand(String);
 String receiveCommandString();
-char receiveCommandChar();
+void interpretString(String);
 
 void setup()
 {
@@ -41,14 +41,19 @@ void setup()
   pinMode(BUZZER, OUTPUT);
 }
 
-
-
 void loop()
 {
     
       String incomingString = receiveCommandString();
-  
+
+      if(incomingString.length() > 1) {
+          interpretString(incomingString);
+      }
       delay(10);
+}
+
+void interpretString(String str) {
+
 }
 
 
