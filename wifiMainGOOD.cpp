@@ -22,11 +22,7 @@
  void setup() {
    Serial.begin(115200);
    Serial.println("test");
- 
-   
- 
    WiFi.begin("MaxiPhone", "23smjt5j43rts");
- 
    Serial.print("Connecting");
    while (WiFi.status() != WL_CONNECTED)
    {

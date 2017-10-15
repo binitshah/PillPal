@@ -5,7 +5,6 @@
  * and output the value to an LCD.
  */
 
- 
 #include <Arduino.h>
 #include <Wire.h>
 #include <rgb_lcd.h>
@@ -14,7 +13,7 @@
 #define BUZZER 9
 #define SERVO 12
 #define ledPin 13
-int incomingByte;   
+int incomingByte;
 
 // LCD variables
 rgb_lcd lcd;
@@ -43,19 +42,40 @@ void setup()
 
 void loop()
 {
-    
-      String incomingString = receiveCommandString();
 
-      if(incomingString.length() > 1) {
-          interpretString(incomingString);
-      }
-      delay(10);
+  String incomingString = receiveCommandString();
+
+  if (incomingString.length() > 1)
+  {
+    interpretString(incomingString);
+  }
+  delay(10);
 }
 
-void interpretString(String str) {
+void interpretString(String in)
+{
 
+  switch (in)
+  {
+  case "green":
+    lcd.setRGB(0, 255, 0);
+    break;
+  case "red":
+    lcd.setRGB(255, 0, 0);
+    break;
+  case "blue":
+    lcd.setRGB(0, 0, 255);
+    break;
+  case "purple":
+    lcd.setRGB(255, 0, 255);
+    break;
+  case "white":
+    lcd.setRGB(255, 255, 255);
+    break;
+  case "rotate":
+    break;
+  }
 }
-
 
 void playFreq(float freq, float dur)
 {
