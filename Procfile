@@ -1,1 +1,1 @@
-web: build\install\PillPall\bin\PillPall
+web: build\install\PillPal\bin\PillPal
