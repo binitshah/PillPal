@@ -5,16 +5,16 @@
  * and output the value to an LCD.
  */
 
+ 
+#include <Arduino.h>
 #include <Wire.h>
 #include <rgb_lcd.h>
-#include <microsmooth.h>
-#include <autotune.h>
 #include <Servo.h>
 
-// FSR variables
-#define fsrAnalogPin A0
-int fsrReading;
-uint16_t *history;
+#define BUZZER 9
+#define SERVO 12
+#define ledPin 13
+int incomingByte;   
 
 // LCD variables
 rgb_lcd lcd;
@@ -24,30 +24,75 @@ Servo mServo;
 
 // Wifi variables
 
+void playFreq(float, float);
+void dispString(String);
+void sendCommand(String);
+String receiveCommandString();
+char receiveCommandChar();
+
 void setup()
 {
   Serial.begin(9600);
-  history = ms_init(KZA);
-  if (history == NULL)
-  {
-    Serial.println("No Memory");
-  }
-
-  mServo.attach(13);
-  mServo.writeMicroseconds(1470);
-
+  mServo.attach(SERVO);
   lcd.begin(16, 2);
-  lcd.setRGB(255, 255, 255);
+  lcd.setRGB(100, 255, 255);
   lcd.print("Pressure:");
-  delay(1000);
+  pinMode(13, OUTPUT);
+  pinMode(BUZZER, OUTPUT);
 }
+
+
 
 void loop()
 {
-  fsrReading = analogRead(fsrAnalogPin);
-  int processedValue = kza_filter(fsrReading, history);
-  Serial.println(processedValue);
+    
+      String incomingString = receiveCommandString();
+      dispString(incomingString);   
+      delay(10);
+}
 
+
+void playFreq(float freq, float dur)
+{
+  tone(BUZZER, freq, dur);
+}
+
+void dispString(String str)
+{
   lcd.setCursor(0, 1);
-  lcd.print(processedValue);
+  lcd.print("          ");
+  lcd.setCursor(0, 1);
+  lcd.print(str);
+}
+
+void sendCommand(String str)
+{
+  Serial.print(str);
+}
+
+char receiveCommandChar()
+{
+  while (!Serial.available())
+  {
+  }
+  char tempChar = Serial.read();
+  return tempChar;
+}
+String receiveCommandString()
+{
+  if (!Serial.available())
+  {
+  }
+  String tempString = Serial.readString();
+  return tempString;
+}
+
+void clockwise()
+{
+  mServo.writeMicroseconds(1300);
+}
+
+void countclockwise()
+{
+  mServo.writeMicroseconds(1700);
 }
