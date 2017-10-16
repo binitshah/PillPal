@@ -28,6 +28,9 @@ void dispString(String);
 void sendCommand(String);
 String receiveCommandString();
 void interpretString(String);
+void clockwise();
+void countclockwise();
+void stop();
 
 void setup()
 {
@@ -35,7 +38,7 @@ void setup()
   mServo.attach(SERVO);
   lcd.begin(16, 2);
   lcd.setRGB(100, 255, 255);
-  lcd.print("Pressure:");
+  lcd.print("Take your pill at");
   pinMode(13, OUTPUT);
   pinMode(BUZZER, OUTPUT);
 }
@@ -43,37 +46,20 @@ void setup()
 void loop()
 {
 
-  String incomingString = receiveCommandString();
+  /*  String incomingString = receiveCommandString();
 
   if (incomingString.length() > 1)
   {
     interpretString(incomingString);
   }
-  delay(10);
-}
+  delay(10);*/
 
-void interpretString(String in)
-{
-
-  switch (in)
-  {
-  case "green":
-    lcd.setRGB(0, 255, 0);
-    break;
-  case "red":
-    lcd.setRGB(255, 0, 0);
-    break;
-  case "blue":
-    lcd.setRGB(0, 0, 255);
-    break;
-  case "purple":
-    lcd.setRGB(255, 0, 255);
-    break;
-  case "white":
-    lcd.setRGB(255, 255, 255);
-    break;
-  case "rotate":
-    break;
+  lcd.setRGB(0, 255, 0);
+  dispString("Thu, 19 Oct 2017 07:00:00 GMT");
+  for(int k = 0; k < 100; k++) {
+    clockwise();
+    delay(100);
+    stop();
   }
 }
 
@@ -120,4 +106,9 @@ void clockwise()
 void countclockwise()
 {
   mServo.writeMicroseconds(1700);
+}
+
+void stop()
+{
+  mServo.writeMicroseconds(1500);
 }
