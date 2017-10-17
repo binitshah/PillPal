@@ -1,3 +1,4 @@
+
 /* Pill Popper
  * Authors: Emma, Binit and Max
  * 
@@ -20,8 +21,6 @@ rgb_lcd lcd;
 
 // Servo variables
 Servo mServo;
-
-// Wifi variables
 
 void playFreq(float, float);
 void dispString(String);
