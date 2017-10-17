@@ -38,7 +38,7 @@
  void loop() {
  
    HTTPClient http;
-   http.begin("pillpal.hirokuapp.com");
+   http.begin("https://pillpal.herokuapp.com/get_next_prescription/31562");
    int httpCode = http.GET();
    String payload = http.getString();
    Serial.println(payload);
